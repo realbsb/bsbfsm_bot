@@ -2,15 +2,23 @@
 
 from __future__ import annotations
 
+from datetime import datetime
+
 import pytest
 import pytest_asyncio
-from datetime import datetime
 from sqlalchemy import BigInteger
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.ext.compiler import compiles
 
 from workflow.db import Base
-from workflow.models import Project, ProjectStageAssignee, Role, Stage, StageAssigneeState, User
+from workflow.models import (
+    Project,
+    ProjectStageAssignee,
+    Role,
+    Stage,
+    StageAssigneeState,
+    User,
+)
 from workflow.services.stage_machine import StageError, advance, rewind
 
 
@@ -106,6 +114,7 @@ async def test_advance_moves_to_next(session: AsyncSession):
     nxt = await advance(session, project, manager)
     assert nxt.id == s2.id
     assert project.stage_id == s2.id
+    assert project.current_assignee_id is None
 
 
 @pytest.mark.asyncio
@@ -127,3 +136,4 @@ async def test_rewind_moves_back(session: AsyncSession):
     prv = await rewind(session, project, manager, "не могу")
     assert prv.id == s1.id
     assert project.stage_id == s1.id
+    assert project.current_assignee_id is None
