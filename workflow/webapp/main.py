@@ -6,10 +6,10 @@ from contextlib import asynccontextmanager
 from datetime import datetime
 from pathlib import Path
 
+import aiohttp
 import redis.asyncio as aioredis
 from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse, RedirectResponse, StreamingResponse
-import aiohttp
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import select
