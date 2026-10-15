@@ -10,10 +10,10 @@ import aiohttp
 import redis.asyncio as aioredis
 from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse, RedirectResponse, StreamingResponse
-from starlette.background import BackgroundTask
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import select
+from starlette.background import BackgroundTask
 
 from ..config import get_settings
 from ..db import Database
@@ -96,11 +96,13 @@ async def project_media(
             raise HTTPException(404, "Медиа не найдено")
         bot_token = get_settings().bot_token
         api_url = f"https://api.telegram.org/bot{bot_token}/getFile"
-        async with aiohttp.ClientSession() as client:
-            async with client.get(api_url, params={"file_id": media.tg_file_id}) as response:
-                if response.status != 200:
-                    raise HTTPException(502, "Не удалось получить медиа")
-                payload = await response.json()
+        async with (
+            aiohttp.ClientSession() as client,
+            client.get(api_url, params={"file_id": media.tg_file_id}) as response,
+        ):
+            if response.status != 200:
+                raise HTTPException(502, "Не удалось получить медиа")
+            payload = await response.json()
         if not payload.get("ok") or not payload.get("result", {}).get("file_path"):
             raise HTTPException(502, "Не удалось получить медиа")
         file_path = payload["result"]["file_path"]
