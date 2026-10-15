@@ -31,3 +31,16 @@ jobs:
 
       - name: Run Ruff
         run: python -m ruff check .
+
+      - name: Send Telegram Notification
+        uses: appleboy/telegram-action@master
+        if: always()
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          message: |
+            Статус сборки: ${{ job.status }}
+            Репозиторий: ${{ github.repository }}
+            Автор: ${{ github.actor }}
+            Коммит: ${{ github.event.head_commit.message }}
+            Ссылка: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
