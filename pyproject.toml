@@ -1,0 +1,95 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "workflow"
+version = "0.2.0"
+description = "Field workflow CRM for Telegram"
+requires-python = ">=3.11"
+readme = "README.md"
+license = { text = "Proprietary" }
+
+dependencies = [
+    # Ядро
+    "aiogram>=3.7,<4",
+    "aiohttp-socks>=0.8", 
+    "sqlalchemy[asyncio]>=2.0.30",
+    "alembic>=1.13",
+    "aiomysql>=0.2.0",
+    "pydantic>=2.7",
+    "pydantic-settings>=2.3",
+    "structlog>=24.1",
+
+    # Очереди и кэш
+    "redis>=5.0",
+    "arq>=0.26",
+
+    # QR и картинки
+    "qrcode[pil]>=7.4",
+    "Pillow>=10.3",
+
+    # Excel и PDF
+    "openpyxl>=3.1",
+    "pdfplumber>=0.11",
+
+    # WebApp
+    "jinja2>=3.1",
+    "fastapi>=0.111",
+    "uvicorn[standard]>=0.30",
+    "python-multipart>=0.0.9",
+
+    # Интеграции
+    "caldav>=1.3",
+    "httpx>=0.27",
+    "docker>=7.1",
+    "tenacity>=8.3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.2",
+    "pytest-asyncio>=0.23",
+    "aiosqlite>=0.20",
+    "ruff>=0.4",
+    "mypy>=1.10",
+]
+
+[project.scripts]
+workflow-bot = "workflow.bot.main:main"
+workflow-seed = "workflow.services.seed_cli:main"
+workflow-seed-demo = "workflow.services.seed_demo:main"
+
+[tool.setuptools.packages.find]
+include = ["workflow*"]
+exclude = ["tests*", "docs*", "scripts*", "alembic*"]
+
+[tool.setuptools.package-data]
+"workflow.webapp" = ["templates/*.html", "static/*"]
+"workflow.bot" = []
+
+[tool.mypy]
+python_version = "3.13"
+strict = false
+ignore_missing_imports = true
+exclude = ["alembic/versions", ".venv"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+exclude = ["alembic/versions", ".venv", "build", "dist", "data"]
+select = ["E", "F", "W", "I", "N", "UP", "B", "C4", "SIM"]
+ignore = [
+    "B008",   # Depends() в аргументах — это FastAPI-паттерн
+    "UP042",  # str + enum.Enum — осознанный выбор
+    "SIM105", # contextlib.suppress — стилистика, не критично
+    "B007",   # неиспользуемая переменная в цикле
+    "E741",   # l как имя переменной
+    "E501",   # длинные строки
+]

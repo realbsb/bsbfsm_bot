@@ -1,0 +1,25 @@
+FROM python:3.13-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        poppler-utils \
+        tzdata \
+        ca-certificates \
+        docker.io \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY pyproject.toml ./
+RUN pip install --upgrade pip && pip install .
+
+COPY workflow ./workflow
+COPY locales ./locales
+COPY alembic.ini ./
+COPY alembic ./alembic
+
+ENV TZ=Europe/Moscow
+CMD ["python", "-m", "workflow.bot.main"]

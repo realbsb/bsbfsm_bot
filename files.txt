@@ -1,0 +1,222 @@
+workflow/
+├── pyproject.toml
+├── .env.example
+├── .gitignore
+├── .dockerignore
+├── README.md
+├── CHANGELOG.md
+├── LICENSE
+├── Makefile
+├── Dockerfile.bot
+├── Dockerfile.webapp
+├── docker-compose.override.yml
+├── alembic.ini
+│
+├── alembic/
+│   ├── env.py
+│   ├── script.py.mako
+│   └── versions/
+│       └── 0001_initial.py
+│
+├── locales/
+│   ├── __init__.py
+│   ├── ru.json
+│   ├── en.json
+│   └── kz.json
+│
+├── scripts/
+│   └── backup.sh
+│
+├── docs/
+│   ├── architecture.md
+│   ├── deployment.md
+│   └── i18n.md
+│
+├── tests/
+│   ├── __init__.py
+│   ├── conftest.py
+│   ├── test_parsers.py
+│   ├── test_stage_machine.py
+│   ├── test_access.py
+│   └── fixtures/
+│       └── .gitkeep
+│
+└── workflow/
+    ├── __init__.py
+    ├── config.py
+    ├── logging_setup.py
+    ├── db.py
+    ├── models.py
+    │
+    ├── parsers/
+    │   ├── __init__.py
+    │   ├── models.py
+    │   ├── normalize.py
+    │   ├── csv_parser.py
+    │   ├── pdf_parser.py
+    │   └── sh3d.py
+    │
+    ├── integrations/
+    │   ├── __init__.py
+    │   ├── whisper_client.py
+    │   ├── llm_client.py
+    │   ├── caldav_client.py
+    │   ├── google_calendar.py
+    │   └── google_oauth.py
+    │
+    ├── services/
+    │   ├── __init__.py
+    │   ├── access.py
+    │   ├── audit.py
+    │   ├── export_finance.py
+    │   ├── final_media.py
+    │   ├── invite.py
+    │   ├── publish.py
+    │   ├── qr.py
+    │   ├── report.py
+    │   ├── seed.py
+    │   ├── seed_cli.py
+    │   ├── sla.py
+    │   └── stage_machine.py
+    │
+    ├── bot/
+    │   ├── __init__.py
+    │   ├── main.py
+    │   ├── keyboards.py
+    │   ├── middlewares.py
+    │   ├── errors.py
+    │   ├── antiflood.py
+    │   ├── filters.py
+    │   ├── states.py
+    │   ├── texts.py
+    │   └── routers/
+    │       ├── __init__.py
+    │       ├── admin.py
+    │       ├── client.py
+    │       ├── fallback.py
+    │       ├── finance.py
+    │       ├── media.py
+    │       ├── price.py
+    │       ├── profile.py
+    │       ├── project.py
+    │       ├── publish.py
+    │       ├── purchase.py
+    │       ├── qr.py
+    │       ├── report.py
+    │       ├── request.py
+    │       ├── schedule.py
+    │       ├── stage.py
+    │       └── start.py
+    │
+    ├── webapp/
+    │   ├── __init__.py
+    │   ├── main.py
+    │   ├── tg_auth.py
+    │   ├── dependencies.py
+    │   ├── routers/
+    │   │   ├── __init__.py
+    │   │   └── qr_redirect.py
+    │   ├── templates/
+    │   │   ├── base.html
+    │   │   └── project.html
+    │   └── static/
+    │       ├── app.css
+    │       └── manifest.json
+    │
+    └── worker/
+        ├── __init__.py
+        └── tasks.py
+
+workflow/
+├── pyproject.toml                    — зависимости и настройки
+├── .env.example                      — шаблон переменных
+├── docker-compose.override.yml       — вставка в NCP
+│
+└── workflow/
+    ├── __init__.py
+    ├── config.py                     — настройки (Pydantic Settings)
+    ├── logging_setup.py              — structlog
+    ├── db.py                         — Database, Base
+    ├── models.py                     — все ORM-модели
+    ├── schemas.py                    — (создать позже, если понадобится)
+    │
+    ├── parsers/
+    │   ├── __init__.py
+    │   ├── models.py                 — ParsedRow, ParsedTable
+    │   ├── normalize.py              — clean_number/bool, decode_bytes
+    │   ├── csv_parser.py             — CSV (CP866)
+    │   ├── pdf_parser.py             — PDF через pdftotext -layout
+    │   └── sh3d.py                   — общий интерфейс
+    │
+    ├── integrations/
+    │   ├── __init__.py
+    │   ├── whisper_client.py         — обёртка вашего Whisper-контейнера
+    │   ├── llm_client.py             — опциональный LLM в интрасете
+    │   ├── caldav_client.py          — (создать позже)
+    │   └── google_calendar.py        — (создать позже)
+    │
+    ├── services/
+    │   ├── __init__.py
+    │   ├── access.py                 — (создать позже)
+    │   ├── stage_machine.py          — переходы стадий
+    │   ├── qr.py                     — QR + наклейки
+    │   ├── export_finance.py         — экспорт финансов
+    │   └── publish.py                — (создать позже)
+    │
+    ├── bot/
+    │   ├── __init__.py
+    │   ├── main.py                   — точка входа
+    │   ├── keyboards.py              — (создать: price_keyboard, confirm_kb и т.д.)
+    │   ├── middlewares.py            — Db/User/Locale
+    │   ├── filters.py                — (создать позже)
+    │   ├── states.py                 — FSM
+    │   ├── texts.py                  — (создать позже, i18n)
+    │   └── routers/
+    │       ├── __init__.py
+    │       ├── start.py              — (создать)
+    │       ├── request.py            — (создать)
+    │       ├── stage.py              — готов
+    │       ├── price.py              — готов
+    │       ├── schedule.py           — (создать)
+    │       ├── purchase.py           — готов
+    │       ├── media.py              — (создать)
+    │       ├── finance.py            — (создать)
+    │       ├── admin.py              — (создать)
+    │       └── fallback.py           — готов
+    │
+    ├── webapp/
+    │   ├── __init__.py
+    │   ├── main.py                   — FastAPI
+    │   ├── tg_auth.py                — проверка initData
+    │   ├── dependencies.py           — get_db, get_tg_user
+    │   └── templates/
+    │       ├── base.html             — (создать)
+    │       └── project.html          — (создать)
+    │
+    └── worker/
+        ├── __init__.py
+        └── tasks.py                  — ARQ
+
+bot/keyboards.py — все клавиатуры (price, confirm, skip, parse_fallback, purchase_review и т.д.).
+
+bot/routers/start.py — первый запуск, регистрация, дефолт-менеджер.
+
+bot/routers/request.py — заявка от секретаря (FSM).
+
+bot/routers/schedule.py — планирование дня.
+
+bot/routers/media.py — приём фото/видео/голоса.
+
+bot/routers/finance.py — экспорт и сдача.
+
+bot/routers/admin.py — /assign, назначения.
+
+integrations/caldav_client.py + google_calendar.py — календари.
+
+services/publish.py — посты в канал и портфолио.
+
+webapp/templates/*.html — вёрстка.
+
+alembic/ — миграции.
+
+i18n — locales/ru.json, en.json, обёртка _().

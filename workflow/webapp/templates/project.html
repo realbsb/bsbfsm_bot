@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Проект #{{ project.id }}{% endblock %}
+
+{% block topbar %}
+  <span class="status">{{ project.stage.name_i18n_key }}</span>
+{% endblock %}
+
+{% block content %}
+  <section class="card">
+    <h1>Проект #{{ project.id }}</h1>
+    {% if project.client_name %}<div class="muted">Заказчик: {{ project.client_name }}</div>{% endif %}
+    {% if project.description %}<p>{{ project.description }}</p>{% endif %}
+  </section>
+
+  {% if project.address_text %}
+  <section class="card">
+    <h2>Адрес</h2>
+    <div>{{ project.address_text }}</div>
+    {% if project.lat and project.lon %}
+      <div class="row">
+        <a class="btn" href="https://yandex.ru/maps/?pt={{ project.lon }},{{ project.lat }}&z=17&l=map" target="_blank">🗺 Карта</a>
+        <a class="btn" href="https://www.google.com/maps/dir/?api=1&destination={{ project.lat }},{{ project.lon }}" target="_blank">🧭 Маршрут</a>
+      </div>
+    {% endif %}
+  </section>
+  {% endif %}
+
+  {% if show_price_agreed and project.price_agreed %}
+  <section class="card">
+    <h2>Оплата</h2>
+    <div>Согласовано: <b>{{ '%.2f'|format(project.price_agreed) }} ₽</b></div>
+    <div>Внесено: <b>{{ '%.2f'|format((project.prepay_paid or 0) + (project.final_paid or 0)) }} ₽</b></div>
+    {% if project.prepay_paid %}<div class="muted">Предоплата: {{ '%.2f'|format(project.prepay_paid) }} ₽</div>{% endif %}
+    {% if project.final_paid %}<div class="muted">Финал: {{ '%.2f'|format(project.final_paid) }} ₽</div>{% endif %}
+  </section>
+  {% endif %}
+
+  {% if show_price_internal and project.price_internal %}
+  <section class="card internal">
+    <h2>Внутренняя</h2>
+    <div>{{ '%.2f'|format(project.price_internal) }} ₽</div>
+  </section>
+  {% endif %}
+
+  {% if show_materials and materials %}
+  <section class="card">
+    <h2>Материалы</h2>
+    <ul class="list">
+      {% for m in materials %}
+        <li>
+          <span>{{ m.common_name }}</span>
+          {% if m.characteristics %}<span class="muted">{{ m.characteristics }}</span>{% endif %}
+          <span class="qty">{{ m.qty }} {{ m.unit }}</span>
+        </li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+
+  {% if show_media_stages and stage_media %}
+  <section class="card">
+    <h2>Медиа по этапам</h2>
+    <div class="grid">
+      {% for m in stage_media %}
+        {% if m.type.value == 'photo' %}
+          <img src="https://api.telegram.org/file/bot{{ bot_token }}/{{ m.tg_file_id }}" alt="">
+        {% elif m.type.value == 'video' %}
+          <video src="https://api.telegram.org/file/bot{{ bot_token }}/{{ m.tg_file_id }}" controls></video>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if show_final_media and final_media %}
+  <section class="card">
+    <h2>Итоговые материалы</h2>
+    <div class="grid">
+      {% for m in final_media %}
+        {% if m.type.value == 'photo' %}
+          <img src="https://api.telegram.org/file/bot{{ bot_token }}/{{ m.tg_file_id }}" alt="">
+        {% elif m.type.value == 'video' %}
+          <video src="https://api.telegram.org/file/bot{{ bot_token }}/{{ m.tg_file_id }}" controls></video>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if participants %}
+  <section class="card">
+    <h2>Участники</h2>
+    <ul class="list">
+      {% for p in participants %}
+        <li>
+          <a href="tg://user?id={{ p.tg_id }}">{{ p.first_name or p.username or p.tg_id }}</a>
+          <span class="muted">{{ p.role }}</span>
+        </li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+{% endblock %}

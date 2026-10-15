@@ -1,0 +1,61 @@
+# Workflow — сервисы приложения.
+# MariaDB и NCP стоят НАТИВНО на хосте.
+# Angie на 192.168.0.1 проксирует workflow.realbsb.ru → 192.168.0.150:8080.
+# Redis — на 192.168.0.1 (внешний).
+
+services:
+  workflow-bot:
+    build:
+      context: .
+      dockerfile: Dockerfile.bot
+    image: workflow-bot:arm64
+    container_name: workflow-bot
+    restart: unless-stopped
+    network_mode: host
+    env_file: .env
+    volumes:
+      - ./workflow:/app/workflow
+      - ./locales:/app/locales
+      - ./alembic:/app/alembic
+      - /var/lib/workflow/exports:/var/lib/workflow/exports
+      - /var/lib/workflow/archive:/var/lib/workflow/archive
+      - /var/lib/workflow/media:/var/lib/workflow/media
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    command: ["python", "-m", "workflow.bot.main"]
+
+  workflow-webapp:
+    build:
+      context: .
+      dockerfile: Dockerfile.webapp
+    image: workflow-webapp:arm64
+    container_name: workflow-webapp
+    restart: unless-stopped
+    network_mode: host
+    env_file: .env
+    volumes:
+      - ./workflow:/app/workflow
+      - ./locales:/app/locales
+      - /var/lib/workflow/exports:/var/lib/workflow/exports:ro
+    command:
+      - "uvicorn"
+      - "workflow.webapp.main:app"
+      - "--host"
+      - "127.0.0.1"
+      - "--port"
+      - "8080"
+      - "--proxy-headers"
+      - "--forwarded-allow-ips"
+      - "192.168.0.1"
+
+  workflow-worker:
+    image: workflow-bot:arm64
+    container_name: workflow-worker
+    restart: unless-stopped
+    network_mode: host
+    env_file: .env
+    volumes:
+      - ./workflow:/app/workflow
+      - ./locales:/app/locales
+      - /var/lib/workflow/exports:/var/lib/workflow/exports
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    command: ["arq", "workflow.worker.tasks.WorkerSettings"]

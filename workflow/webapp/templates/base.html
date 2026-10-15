@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="{{ locale }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>{% block title %}Workflow{% endblock %}</title>
+  <link rel="stylesheet" href="/static/app.css">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">Workflow</div>
+    {% block topbar %}{% endblock %}
+  </header>
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="footer">
+    {% block footer %}
+      <a href="https://t.me/{{ secretary_contact or 'workflow_bot' }}">Связаться с секретарём</a>
+    {% endblock %}
+  </footer>
+  <script>
+    if (window.Telegram && window.Telegram.WebApp) {
+      window.Telegram.WebApp.ready();
+      window.Telegram.WebApp.expand();
+    }
+  </script>
+</body>
+</html>

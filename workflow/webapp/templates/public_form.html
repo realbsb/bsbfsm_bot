@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}{{ form.title }}{% endblock %}
+
+{% block content %}
+<section class="card">
+  <h1>{{ form.title }}</h1>
+  <form method="post" action="{{ root_path }}/request/{{ form.slug }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+    {% for field in form.fields_json %}
+      <div class="field">
+        <label for="f_{{ field.key }}">
+          {{ field.label }}{% if field.required %} *{% endif %}
+        </label>
+        {% if field.type == 'text' %}
+          <input id="f_{{ field.key }}" name="{{ field.key }}" type="text"
+                 {% if field.required %}required{% endif %}>
+        {% elif field.type == 'phone' %}
+          <input id="f_{{ field.key }}" name="{{ field.key }}" type="tel"
+                 {% if field.required %}required{% endif %}>
+        {% elif field.type == 'email' %}
+          <input id="f_{{ field.key }}" name="{{ field.key }}" type="email"
+                 {% if field.required %}required{% endif %}>
+        {% elif field.type == 'textarea' %}
+          <textarea id="f_{{ field.key }}" name="{{ field.key }}" rows="4"
+                    {% if field.required %}required{% endif %}></textarea>
+        {% elif field.type == 'datetime' %}
+          <input id="f_{{ field.key }}" name="{{ field.key }}" type="datetime-local"
+                 {% if field.required %}required{% endif %}>
+        {% endif %}
+      </div>
+    {% endfor %}
+
+    <!-- honeypot -->
+    <div style="position:absolute;left:-9999px;">
+      <input type="text" name="website" tabindex="-1" autocomplete="off">
+    </div>
+
+    <button type="submit" class="btn">Отправить</button>
+  </form>
+</section>
+{% endblock %}
