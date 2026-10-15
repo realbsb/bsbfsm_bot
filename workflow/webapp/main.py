@@ -10,6 +10,7 @@ import aiohttp
 import redis.asyncio as aioredis
 from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse, RedirectResponse, StreamingResponse
+from starlette.background import BackgroundTask
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import select
@@ -104,18 +105,36 @@ async def project_media(
             raise HTTPException(502, "Не удалось получить медиа")
         file_path = payload["result"]["file_path"]
 
-    async def stream_file():
-        async with aiohttp.ClientSession() as client:
-            async with client.get(
-                f"https://api.telegram.org/file/bot{bot_token}/{file_path}"
-            ) as response:
-                if response.status != 200:
-                    return
-                async for chunk in response.content.iter_chunked(64 * 1024):
-                    yield chunk
+    file_client = aiohttp.ClientSession()
+    try:
+        file_response = await file_client.get(
+            f"https://api.telegram.org/file/bot{bot_token}/{file_path}"
+        )
+        if file_response.status != 200:
+            file_response.release()
+            await file_client.close()
+            raise HTTPException(502, "Не удалось загрузить медиа")
+    except Exception:
+        await file_client.close()
+        raise
 
-    content_type = "video/mp4" if media.type.value == "video" else "image/jpeg"
-    return StreamingResponse(stream_file(), media_type=content_type)
+    async def stream_file():
+        try:
+            async for chunk in file_response.content.iter_chunked(64 * 1024):
+                yield chunk
+        finally:
+            file_response.release()
+            await file_client.close()
+
+    content_type = file_response.headers.get(
+        "Content-Type",
+        "video/mp4" if media.type.value == "video" else "image/jpeg",
+    )
+    return StreamingResponse(
+        stream_file(),
+        media_type=content_type,
+        background=BackgroundTask(file_client.close),
+    )
 
 
 @app.get("/p/{key}", response_class=HTMLResponse)
