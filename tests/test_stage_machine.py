@@ -107,7 +107,7 @@ async def _create_project(session, manager, stage, assignee):
 
 @pytest.mark.asyncio
 async def test_advance_moves_to_next(session: AsyncSession):
-    manager, executor, s1, s2, _s3 = await _setup(session)
+    manager, _executor, s1, s2, _s3 = await _setup(session)
 
     project = await _create_project(session, manager, s1, manager)
 
@@ -119,7 +119,7 @@ async def test_advance_moves_to_next(session: AsyncSession):
 
 @pytest.mark.asyncio
 async def test_advance_fails_on_last_stage(session: AsyncSession):
-    manager, executor, _s1, _s2, s3 = await _setup(session)
+    manager, _executor, _s1, _s2, s3 = await _setup(session)
 
     project = await _create_project(session, manager, s3, manager)
 
