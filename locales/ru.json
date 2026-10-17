@@ -9,20 +9,17 @@
   "common.error": "Произошла ошибка. Попробуйте ещё раз.",
   "common.not_found": "Не найдено",
   "common.not_allowed": "Недоступно для вашей роли",
-
   "start.welcome_new_manager": "Добро пожаловать! Вы назначены менеджером. Соберите команду в разделе «Профиль».",
   "start.welcome_existing": "С возвращением, {name}!",
   "start.welcome_admin": "Здравствуйте, администратор.",
   "start.welcome_back": "С возвращением, {name}!",
   "start.welcome_client": "Здравствуйте! Оставьте, пожалуйста, информацию о вашей задаче — мы свяжемся с вами.",
   "start.order_hello": "Здравствуйте! Оставьте заявку, и менеджер свяжется с вами.",
-
   "profile.title": "Ваш профиль",
   "profile.roles": "Ваши роли",
   "profile.locale": "Язык",
   "profile.locale_changed": "Язык изменён на {name}",
   "profile.no_roles": "У вас пока нет ролей.",
-
   "request.prompt_details": "Опишите заявку одним сообщением — текстом или голосом.\n\n<i>Можно просто рассказать:</i>\n«Заказчик: Антон. Телефон: +79080565467. Объект: натяжные потолки, квартира 60 м². Описание: матовые, до 15 ноября.»",
   "request.confirm_header": "<b>Проверьте, что я понял:</b>",
   "request.edit_prompt": "Введите новое значение для поля «{field}»:",
@@ -35,7 +32,6 @@
   "request.invite_text": "Спасибо за обращение! Ваша заявка принята. Личный кабинет в боте: {link}",
   "request.no_stages": "У вас нет стадий. Обратитесь к администратору.",
   "request.required_missing": "⚠️ Заполните обязательные поля: {fields}",
-
   "stage.finish": "Завершено",
   "stage.refuse": "Отказаться",
   "stage.media_required": "Нужен фото/видео-отчёт. Пришлите материалы.",
@@ -55,44 +51,35 @@
   "stage.rewind_done": "Проект возвращён на этап «{stage}».",
   "stage.refuse_no_alternatives": "Вы единственный исполнитель на этом этапе. Пожаловаться можно менеджеру.",
   "stage.rewind_not_allowed": "Возврат доступен только менеджеру проекта.",
-
   "price.enter": "Введите сумму (клавиатура ниже).",
   "price.invalid": "Некорректная сумма. Начните заново.",
   "price.confirm": "Сумма: {amount} ₽. Подтвердить?",
   "price.saved": "Сохранено: {amount} ₽",
-
   "parse.detected": "Распознано {rows} строк → после агрегации {agg}.\nИсточник: {source}\n\n{preview}\n\nЧто делаем?",
   "parse.failed": "Не удалось распознать таблицу. Как поступим?",
   "parse.accepted": "Список сохранён. Можно править, группировать, экспортировать.",
   "parse.send_csv": "Пришлите CSV-файл из SweetHome 3D.",
   "parse.send_pdf": "Пришлите PDF-файл из SweetHome 3D.",
-
   "purchase.list_title": "📋 Список закупа — проект #{id}",
   "purchase.added": "Позиция добавлена",
   "purchase.deleted": "Позиция удалена",
   "purchase.bought": "Отмечено купленным",
   "purchase.exported": "Экспортировано: {path}",
-
   "schedule.pick_projects": "Выберите объекты на {date}:",
   "schedule.saved": "Запланировано: {count} объектов.",
-
   "finance.export_started": "Экспорт запущен. Это займёт немного времени.",
   "finance.export_done": "Финансы выгружены и удалены из системы:\n{files}",
   "finance.export_failed": "Ошибка экспорта: {error}",
-
   "publish.title": "Опубликовать итог работ?",
   "publish.channel_done": "Пост в канале создан: {url}",
   "publish.portfolio_done": "Добавлено в портфолио.",
   "publish.skipped": "Публикация пропущена.",
-
   "fallback.header": "{text}\n\n➡️ <b>{label}</b>",
   "fallback.done": "Все поля заполнены. Проверьте и подтвердите:",
-
   "roles.manager": "Менеджер",
   "roles.secretary": "Секретарь",
   "roles.supplier": "Снабженец",
   "roles.executor": "Исполнитель",
-
   "stages.request": "Заявка",
   "stages.planning": "Планирование",
   "stages.negotiation": "Согласование условий",
@@ -101,17 +88,14 @@
   "stages.realization": "Реализация",
   "stages.ready": "Готово",
   "stages.delivered": "Сдано",
-
   "errors.stage_error": "Ошибка этапа: {msg}",
   "errors.db_error": "Ошибка базы данных",
   "errors.whisper_error": "Не удалось распознать голос",
   "errors.llm_unavailable": "LLM недоступна, заполните вручную",
-
   "sla.warn_1": "Напоминание: у {name} заканчивается срок по задаче #{project_id}. Осталось ~{hours} ч.",
   "sla.warn_2": "Совсем немного времени осталось: ~{hours} ч по задаче #{project_id}. {name}, если что-то мешает — напиши менеджеру.",
   "sla.expired_assignee": "Похоже, сегодня не получилось закончить по задаче #{project_id}. Расскажи, пожалуйста, что случилось — текстом, голосом или видео, и приложи фото/видео с объекта.",
   "sla.expired_manager": "По задаче #{project_id} срок истёк. Ждём твоего решения: продлить, помочь или переназначить.",
-
   "team.no_candidates": "На этот этап нет ни одного исполнителя. Назначьте кого-нибудь в команде.",
   "team.candidates_title": "Кто будет исполнителем этапа «{stage}»?",
   "team.assigned": "Исполнитель назначен: {name}",
@@ -124,7 +108,6 @@
   "team.invite_role_missing": "Роль не найдена. Обратитесь к менеджеру.",
   "team.already_in_team": "Вы уже в этой команде.",
   "team.joined_success": "Вы добавлены в команду {manager}.",
-
   "menu.intake": "🆕 Новая заявка",
   "menu.tasks": "📋 Мои задачи",
   "menu.day": "📅 Мой день",
@@ -132,22 +115,17 @@
   "menu.tasks_title": "Ваши задачи:",
   "menu.no_tasks": "Пока пусто. Задачи появятся, когда ответственный внесёт новую заявку и наступит ваша очередь. Если вы новый менеджер — настройте организацию в профиле (⚙️ Профиль → 🏢 Организация) и пригласите команду (/team).",
   "menu.fallback": "Используйте кнопки меню.",
-
   "client.no_project": "У вас пока нет активных заявок. Секретарь свяжется с вами.",
   "client.no_project_fallback": "Заявка не найдена. Возможно, ссылка устарела.",
-
   "org.title": "🏢 Профиль организации",
   "org.intake_label_prompt": "Как называть кнопку приёма? Выберите из готовых или введите своё.",
   "org.intake_label_custom": "Введите название кнопки приёма:",
   "org.intake_label_too_short": "Слишком коротко, введите хотя бы 2 символа.",
-
   "forms.title": "Ваши формы:",
   "forms.empty": "У вас пока нет форм. Создайте первую:",
-
   "team.roles_title": "Профессии и права:",
   "team.roles_hint": "Управление профессиями появится в следующем обновлении.",
   "team.roles_manage_soon": "Скоро",
-
   "roles.intake": "Приём",
   "roles.supply": "Закуп",
   "roles.execute": "Исполнение",
@@ -165,7 +143,6 @@
   "team.position_flags_prompt": "Флаги профессии «{name}»:",
   "team.position_has_assignments": "Нельзя удалить: есть активные назначения.",
   "team.position_new_prompt": "Введите название новой профессии:",
-
   "day.pick_date": "На какой день показать?",
   "day.header_today": "📅 Сегодня, {date} ({weekday})",
   "day.header_tomorrow": "📅 Завтра, {date} ({weekday})",
@@ -173,6 +150,20 @@
   "day.day_off": "Сегодня выходной. Отдыхай.",
   "day.rest": "Нет активных задач на этот день.",
   "day.overdue_title": "⚠️ Просроченные с прошлых дней:",
-  "schedule.no_projects": "Нераспланированных проектов нет."
+  "schedule.no_projects": "Нераспланированных проектов нет.",
+  "org.workday_title": "Рабочий день организации: {start}–{end}\\nРабочие дни: {days}\\n\\nНажмите на время, чтобы изменить. Нажмите на день недели, чтобы включить или выключить его.",
+  "org.workday_start": "Начало рабочего дня",
+  "org.workday_end": "Конец рабочего дня",
+  "org.workday_time_prompt": "Введите время «{field}» в формате ЧЧ:ММ (например, 09:00).",
+  "org.workday_invalid_time": "Неверный формат. Введите время в формате ЧЧ:ММ, например 09:00.",
+  "org.workday_invalid_range": "Начало рабочего дня должно быть раньше окончания.",
+  "org.workday_at_least_one": "Нужно оставить хотя бы один рабочий день.",
+  "org.no_workdays": "не выбраны",
+  "org.weekday_1": "Понедельник",
+  "org.weekday_2": "Вторник",
+  "org.weekday_3": "Среда",
+  "org.weekday_4": "Четверг",
+  "org.weekday_5": "Пятница",
+  "org.weekday_6": "Суббота",
+  "org.weekday_7": "Воскресенье"
 }
-
