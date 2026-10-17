@@ -9,20 +9,17 @@
   "common.error": "An error occurred. Please try again.",
   "common.not_found": "Not found",
   "common.not_allowed": "Not available for your role",
-
   "start.welcome_new_manager": "Welcome! You have been appointed as a manager. Assemble your team in the \"Profile\" section.",
   "start.welcome_existing": "Welcome back, {name}!",
   "start.welcome_admin": "Hello, administrator.",
   "start.welcome_back": "Welcome back, {name}!",
   "start.welcome_client": "Hello! Please leave information about your request — we will contact you.",
   "start.order_hello": "Hello! Please submit a request, and a manager will contact you.",
-
   "profile.title": "Your Profile",
   "profile.roles": "Your Roles",
   "profile.locale": "Language",
   "profile.locale_changed": "Language changed to {name}",
   "profile.no_roles": "You don't have any roles yet.",
-
   "request.new": "Creating a request",
   "request.client_name": "Client's name?",
   "request.client_phone": "Client's phone number?",
@@ -31,7 +28,6 @@
   "request.confirm": "Please check the request data:",
   "request.created": "Request created: #{id}\nStatus: {stage}",
   "request.invite_text": "Thank you for reaching out! Your request has been accepted. A personal account has been created for you in our bot: {link}",
-
   "stage.finish": "Completed",
   "stage.refuse": "Decline",
   "stage.media_required": "Photo/video report is required. Please send materials.",
@@ -51,45 +47,36 @@
   "stage.rewind_done": "Project returned to the \"{stage}\" stage.",
   "stage.refuse_no_alternatives": "You are the only assignee for this stage. You can contact your manager to complain.",
   "stage.rewind_not_allowed": "Rollback is available only to the project manager.",
-
   "price.enter": "Enter the amount (using the keyboard below).",
   "price.invalid": "Invalid amount. Please start over.",
   "price.confirm": "Amount: {amount} ₽. Confirm?",
   "price.saved": "Saved: {amount} ₽",
-
   "parse.detected": "Recognized {rows} rows → after aggregation {agg}.\nSource: {source}\n\n{preview}\n\nWhat should we do?",
   "parse.failed": "Failed to recognize the table. How should we proceed?",
   "parse.accepted": "The list has been saved. You can edit, group, or export it.",
   "parse.send_csv": "Please send a CSV file from SweetHome 3D.",
   "parse.send_pdf": "Please send a PDF file from SweetHome 3D.",
-
   "purchase.list_title": "📋 Purchase List — Project #{id}",
   "purchase.added": "Item added",
   "purchase.deleted": "Item deleted",
   "purchase.bought": "Marked as bought",
   "purchase.exported": "Exported: {path}",
-
   "schedule.title": "Which day are we planning for?",
   "schedule.pick_projects": "Select objects for {date}:",
   "schedule.saved": "Scheduled: {count} objects.",
-
   "finance.export_started": "Export started. This will take a short moment.",
   "finance.export_done": "Financial logs exported and removed from the system:\n{files}",
   "finance.export_failed": "Export error: {error}",
-
   "publish.title": "Publish work results?",
   "publish.channel_done": "Channel post created: {url}",
   "publish.portfolio_done": "Added to portfolio.",
   "publish.skipped": "Publishing skipped.",
-
   "fallback.header": "<b>Recognized text:</b>\n<code>{text}</code>\n\n<b>Step:</b> {label}\nCopy what you need from the text above or enter it manually.",
   "fallback.done": "All fields are filled. Please check and confirm:",
-
   "roles.manager": "Manager",
   "roles.secretary": "Secretary",
   "roles.supplier": "Supplier",
   "roles.executor": "Contractor",
-
   "stages.request": "Request",
   "stages.planning": "Planning",
   "stages.negotiation": "Negotiation",
@@ -98,17 +85,14 @@
   "stages.realization": "Execution",
   "stages.ready": "Ready",
   "stages.delivered": "Handed over",
-
   "errors.stage_error": "Stage error: {msg}",
   "errors.db_error": "Database error",
   "errors.whisper_error": "Failed to recognize voice",
   "errors.llm_unavailable": "LLM is unavailable, please fill in manually",
-
   "sla.warn_1": "Reminder: {name}'s deadline for task #{project_id} is running out. About ~{hours} hours left.",
   "sla.warn_2": "Very little time left: ~{hours} hours for task #{project_id}. {name}, if anything is blocking you, please message the manager.",
   "sla.expired_assignee": "It looks like it wasn't possible to finish task #{project_id} today. Please share what happened via text, voice, or video, and attach photos/videos from the site.",
   "sla.expired_manager": "The deadline for task #{project_id} has expired. Awaiting your decision: extend, assist, or reassign.",
-
   "team.no_candidates": "There are no assignees available for this stage. Please assign someone from the team.",
   "team.candidates_title": "Who will be the contractor for the \"{stage}\" stage?",
   "team.assigned": "Contractor assigned: {name}",
@@ -121,7 +105,6 @@
   "team.invite_role_missing": "Role not found. Please contact the manager.",
   "team.already_in_team": "You are already in this team.",
   "team.joined_success": "You have been added to {manager}'s team.",
-
   "menu.intake": "🆕 New Request",
   "menu.tasks": "📋 My Tasks",
   "menu.day": "📅 My Day",
@@ -129,15 +112,34 @@
   "menu.tasks_title": "Your tasks:",
   "menu.no_tasks": "Empty for now. Tasks will appear once the responsible person enters a new request and it is your turn. If you are a new manager, please configure your organization settings in the profile (⚙️ Profile → 🏢 Organization) and invite your team (/team).",
   "menu.fallback": "Please use the menu buttons.",
-
   "client.no_project": "You don't have any active requests yet. The secretary will contact you.",
   "client.no_project_fallback": "Request not found. The link might be expired.",
-
   "org.title": "🏢 Organization Profile",
   "org.intake_label_prompt": "What should the intake button be called? Choose from the options or enter your own.",
   "org.intake_label_custom": "Enter the custom name for the intake button:",
   "org.intake_label_too_short": "Too short, please enter at least 2 characters.",
-
   "forms.title": "Your forms:",
-  "forms.empty": "You don't have any forms yet. Create your first one:"
+  "forms.empty": "You don't have any forms yet. Create your first one:",
+  "org.workday_title": "Organization working hours: {start}–{end}\nWorking days: {days}\n\nTap a time to edit it. Tap a weekday to enable or disable it.",
+  "org.workday_start": "Start of working day",
+  "org.workday_end": "End of working day",
+  "org.workday_time_prompt": "Enter “{field}” as HH:MM (for example, 09:00).",
+  "org.workday_invalid_time": "Invalid format. Enter time as HH:MM, for example 09:00.",
+  "org.workday_invalid_range": "Working day start must be earlier than its end.",
+  "org.workday_at_least_one": "At least one working day must remain enabled.",
+  "org.no_workdays": "none selected",
+  "org.weekday_1": "Monday",
+  "org.weekday_2": "Tuesday",
+  "org.weekday_3": "Wednesday",
+  "org.weekday_4": "Thursday",
+  "org.weekday_5": "Friday",
+  "org.weekday_6": "Saturday",
+  "org.weekday_7": "Sunday",
+  "org.weekday_short_1": "Mon",
+  "org.weekday_short_2": "Tue",
+  "org.weekday_short_3": "Wed",
+  "org.weekday_short_4": "Thu",
+  "org.weekday_short_5": "Fri",
+  "org.weekday_short_6": "Sat",
+  "org.weekday_short_7": "Sun"
 }

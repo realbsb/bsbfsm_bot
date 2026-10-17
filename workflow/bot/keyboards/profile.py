@@ -5,6 +5,7 @@ from __future__ import annotations
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 from ...models import Role
+from ..texts import t
 
 
 def lang_kb(current: str) -> InlineKeyboardMarkup:
@@ -76,6 +77,49 @@ def org_kb() -> InlineKeyboardMarkup:
             [InlineKeyboardButton(text="◀️ Назад", callback_data="profile_back")],
         ]
     )
+
+
+def org_workday_kb(
+    start: str,
+    end: str,
+    workdays: list[int],
+    locale: str,
+) -> InlineKeyboardMarkup:
+    """Настройка часов и рабочих дней организации."""
+    day_names = [
+        (day, t(f"org.weekday_short_{day}", locale))
+        for day in range(1, 8)
+    ]
+    rows = [
+        [
+            InlineKeyboardButton(
+                text=f"{t('org.workday_start', locale)}: {start}",
+                callback_data="org_workday_start",
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                text=f"{t('org.workday_end', locale)}: {end}",
+                callback_data="org_workday_end",
+            )
+        ],
+    ]
+    rows.append([
+        InlineKeyboardButton(
+            text=f"{'✅' if day in workdays else '▫️'} {name}",
+            callback_data=f"org_workday_day:{day}",
+        )
+        for day, name in day_names[:4]
+    ])
+    rows.append([
+        InlineKeyboardButton(
+            text=f"{'✅' if day in workdays else '▫️'} {name}",
+            callback_data=f"org_workday_day:{day}",
+        )
+        for day, name in day_names[4:]
+    ])
+    rows.append([InlineKeyboardButton(text=t("common.back", locale), callback_data="org_open")])
+    return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
 def org_intake_label_kb(current: str | None) -> InlineKeyboardMarkup:

@@ -21,6 +21,7 @@ from .profile import (
     lang_kb,
     org_intake_label_kb,
     org_kb,
+    org_workday_kb,
     profile_kb,
     team_role_kb,
 )
@@ -76,6 +77,7 @@ __all__ = [
     "lang_kb",
     "org_intake_label_kb",
     "org_kb",
+    "org_workday_kb",
     "profile_kb",
     "team_role_kb",
     # project

@@ -33,7 +33,7 @@ from ...services.day import (
 from ..keyboards import date_kb, day_back_kb, day_kb, projects_multi_kb
 from ..states import ScheduleFSM
 from ..texts import t
-from ..utils import trace
+from ..utils import _safe_msg, trace
 
 log = get_logger(__name__)
 router = Router(name="schedule")
@@ -79,7 +79,11 @@ async def day_cb_today(
     session,
     locale: str,
 ) -> None:
-    await _show_day(cb.message, state, user, session, locale, date.today(), edit=True)
+    msg = _safe_msg(cb)
+    if msg is None:
+        await cb.answer()
+        return
+    await _show_day(msg, state, user, session, locale, date.today(), edit=True)
     await cb.answer()
 
 
@@ -92,8 +96,12 @@ async def day_cb_tomorrow(
     session,
     locale: str,
 ) -> None:
+    msg = _safe_msg(cb)
+    if msg is None:
+        await cb.answer()
+        return
     target = date.today() + timedelta(days=1)
-    await _show_day(cb.message, state, user, session, locale, target, edit=True)
+    await _show_day(msg, state, user, session, locale, target, edit=True)
     await cb.answer()
 
 
@@ -104,7 +112,11 @@ async def day_cb_other(
     state: FSMContext,
     locale: str,
 ) -> None:
-    await cb.message.edit_text(t("day.pick_date", locale), reply_markup=date_kb())
+    msg = _safe_msg(cb)
+    if msg is None:
+        await cb.answer()
+        return
+    await msg.edit_text(t("day.pick_date", locale), reply_markup=date_kb())
     await cb.answer()
 
 
@@ -252,9 +264,18 @@ async def on_date_pick(
     session,
     locale: str,
 ) -> None:
-    date_iso = cb.data.split(":")[1]
-    target = date.fromisoformat(date_iso)
-    await _show_day(cb.message, state, user, session, locale, target, edit=True)
+    data = cb.data
+    msg = _safe_msg(cb)
+    if data is None or msg is None:
+        await cb.answer()
+        return
+    _, _, date_iso = data.partition(":")
+    try:
+        target = date.fromisoformat(date_iso)
+    except ValueError:
+        await cb.answer(t("common.error", locale), show_alert=True)
+        return
+    await _show_day(msg, state, user, session, locale, target, edit=True)
     await cb.answer()
 
 
@@ -272,25 +293,30 @@ async def reschedule_start(
     session,
     locale: str,
 ) -> None:
+    msg = _safe_msg(cb)
+    if msg is None:
+        await cb.answer()
+        return
+
     target = date.today() + timedelta(days=1)
     await state.set_state(ScheduleFSM.pick_projects)
     await state.update_data(date=target.isoformat(), selected=[])
 
     projects = await _unplanned_projects(session, user)
     if not projects:
-        await cb.message.edit_text(t("schedule.no_projects", locale))
+        await msg.edit_text(t("schedule.no_projects", locale))
         await state.clear()
         await cb.answer()
         return
 
     text = t("schedule.pick_projects", locale, date=target.strftime("%d.%m"))
     try:
-        await cb.message.edit_text(
+        await msg.edit_text(
             text,
             reply_markup=projects_multi_kb(projects, set()),
         )
     except Exception:
-        await cb.message.answer(
+        await msg.answer(
             text,
             reply_markup=projects_multi_kb(projects, set()),
         )
@@ -330,7 +356,16 @@ async def reschedule_pick(
     session,
     locale: str,
 ) -> None:
-    pid = int(cb.data.split(":")[1])
+    callback_data = cb.data
+    msg = _safe_msg(cb)
+    if callback_data is None or msg is None:
+        await cb.answer()
+        return
+    try:
+        pid = int(callback_data.partition(":")[2])
+    except ValueError:
+        await cb.answer(t("common.error", locale), show_alert=True)
+        return
     data = await state.get_data()
     sel = set(data.get("selected", []))
     sel.symmetric_difference_update({pid})
@@ -338,7 +373,7 @@ async def reschedule_pick(
 
     projects = await _unplanned_projects(session, user)
     try:
-        await cb.message.edit_reply_markup(
+        await msg.edit_reply_markup(
             reply_markup=projects_multi_kb(projects, sel),
         )
     except Exception:
@@ -356,9 +391,19 @@ async def reschedule_confirm(
     settings: Settings,
     locale: str,
 ) -> None:
+    msg = _safe_msg(cb)
+    if msg is None:
+        await cb.answer()
+        return
+
     data = await state.get_data()
     selected = data.get("selected", [])
-    target = date.fromisoformat(data["date"])
+    try:
+        target = date.fromisoformat(data["date"])
+    except (KeyError, TypeError, ValueError):
+        await state.clear()
+        await cb.answer(t("common.error", locale), show_alert=True)
+        return
 
     from ...integrations.caldav_client import CaldavClient, is_configured
 
@@ -415,7 +460,7 @@ async def reschedule_confirm(
     await session.commit()
     await state.clear()
     try:
-        await cb.message.edit_text(t("schedule.saved", locale, count=created))
+        await msg.edit_text(t("schedule.saved", locale, count=created))
     except Exception:
-        await cb.message.answer(t("schedule.saved", locale, count=created))
+        await msg.answer(t("schedule.saved", locale, count=created))
     await cb.answer()
