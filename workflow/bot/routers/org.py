@@ -17,7 +17,7 @@ from ...services import org_settings as org_service
 from ..keyboards import cancel_kb, org_intake_label_kb, org_kb
 from ..states import OrgFSM
 from ..texts import t
-from ..utils import trace
+from ..utils import _safe_msg, trace
 
 log = get_logger(__name__)
 router = Router(name="org")
@@ -46,17 +46,12 @@ async def _is_manager(session, user: User) -> bool:
     return row is not None
 
 
-async def _can_use(event, user, session, settings) -> bool:
+async def _can_use(event, user: User, session, settings: Settings) -> bool:
     if user.tg_id in (settings.bot_admin_ids or []):
         return True
     if user.is_admin:
         return True
     return await _is_manager(session, user)
-
-
-# ============================================================
-# Вход
-# ============================================================
 
 
 @router.callback_query(F.data == "org_open")
@@ -69,6 +64,12 @@ async def org_open(
     locale: str,
 ) -> None:
     if not await _can_use(cb, user, session, settings):
+        await cb.answer(t("common.not_allowed", locale), show_alert=True)
+        return
+
+    msg = _safe_msg(cb)
+    if msg is None:
+        await cb.answer()
         return
 
     org = await org_service.get_or_create(session, user.id)
@@ -82,13 +83,8 @@ async def org_open(
         f"Канал: {org.promo_channel_url or '—'}\n"
         f"Кнопка приёма: {org.intake_label or '🆕 Новая заявка'}"
     )
-    await cb.message.edit_text(text, reply_markup=org_kb())
+    await msg.edit_text(text, reply_markup=org_kb())
     await cb.answer()
-
-
-# ============================================================
-# Название кнопки приёма
-# ============================================================
 
 
 @router.callback_query(F.data == "org_intake_label")
@@ -101,9 +97,16 @@ async def org_intake_label(
     locale: str,
 ) -> None:
     if not await _can_use(cb, user, session, settings):
+        await cb.answer(t("common.not_allowed", locale), show_alert=True)
         return
+
+    msg = _safe_msg(cb)
+    if msg is None:
+        await cb.answer()
+        return
+
     org = await org_service.get_or_create(session, user.id)
-    await cb.message.edit_text(
+    await msg.edit_text(
         t("org.intake_label_prompt", locale),
         reply_markup=org_intake_label_kb(org.intake_label),
     )
@@ -120,11 +123,16 @@ async def org_intake_label_set(
     locale: str,
 ) -> None:
     if not await _can_use(cb, user, session, settings):
+        await cb.answer(t("common.not_allowed", locale), show_alert=True)
         return
-    value = cb.data.split(":", 1)[1]
+
+    value = (cb.data or "").partition(":")[2]
+    if not value:
+        await cb.answer(t("common.error", locale), show_alert=True)
+        return
+
     await org_service.update_field(session, user.id, "intake_label", value)
     await session.commit()
-    await cb.answer(t("common.saved", locale))
     await org_open(cb, user, session, settings, locale)
 
 
@@ -139,9 +147,16 @@ async def org_intake_label_custom(
     locale: str,
 ) -> None:
     if not await _can_use(cb, user, session, settings):
+        await cb.answer(t("common.not_allowed", locale), show_alert=True)
         return
+
+    msg = _safe_msg(cb)
+    if msg is None:
+        await cb.answer()
+        return
+
     await state.set_state(OrgFSM.intake_label)
-    await cb.message.edit_text(
+    await msg.edit_text(
         t("org.intake_label_custom", locale),
         reply_markup=cancel_kb(),
     )
@@ -175,9 +190,12 @@ async def org_intake_label_save(
 ) -> None:
     if not await _can_use(msg, user, session, settings):
         return
+
     value = (msg.text or "").strip()[:64]
     if len(value) < 2:
-        return await msg.answer(t("org.intake_label_too_short", locale))
+        await msg.answer(t("org.intake_label_too_short", locale))
+        return
+
     await org_service.update_field(session, user.id, "intake_label", value)
     await session.commit()
     await state.clear()
