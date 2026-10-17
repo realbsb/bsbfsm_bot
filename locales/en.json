@@ -134,5 +134,12 @@
   "org.weekday_4": "Thursday",
   "org.weekday_5": "Friday",
   "org.weekday_6": "Saturday",
-  "org.weekday_7": "Sunday"
+  "org.weekday_7": "Sunday",
+  "org.weekday_short_1": "Mon",
+  "org.weekday_short_2": "Tue",
+  "org.weekday_short_3": "Wed",
+  "org.weekday_short_4": "Thu",
+  "org.weekday_short_5": "Fri",
+  "org.weekday_short_6": "Sat",
+  "org.weekday_short_7": "Sun"
 }
