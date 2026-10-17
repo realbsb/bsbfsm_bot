@@ -78,6 +78,31 @@ def org_kb() -> InlineKeyboardMarkup:
     )
 
 
+def org_workday_kb(start: str, end: str, workdays: list[int]) -> InlineKeyboardMarkup:
+    """Настройка часов и рабочих дней организации."""
+    day_names = [(1, "Пн"), (2, "Вт"), (3, "Ср"), (4, "Чт"), (5, "Пт"), (6, "Сб"), (7, "Вс")]
+    rows = [
+        [InlineKeyboardButton(text=f"Начало: {start}", callback_data="org_workday_start")],
+        [InlineKeyboardButton(text=f"Конец: {end}", callback_data="org_workday_end")],
+    ]
+    rows.append([
+        InlineKeyboardButton(
+            text=f"{'✅' if day in workdays else '▫️'} {name}",
+            callback_data=f"org_workday_day:{day}",
+        )
+        for day, name in day_names[:4]
+    ])
+    rows.append([
+        InlineKeyboardButton(
+            text=f"{'✅' if day in workdays else '▫️'} {name}",
+            callback_data=f"org_workday_day:{day}",
+        )
+        for day, name in day_names[4:]
+    ])
+    rows.append([InlineKeyboardButton(text="◀️ Назад", callback_data="org_open")])
+    return InlineKeyboardMarkup(inline_keyboard=rows)
+
+
 def org_intake_label_kb(current: str | None) -> InlineKeyboardMarkup:
     """Выбор названия кнопки приёма. Пресеты + ввод."""
     presets = [
