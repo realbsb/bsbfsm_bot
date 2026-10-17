@@ -165,5 +165,12 @@
   "org.weekday_4": "Четверг",
   "org.weekday_5": "Пятница",
   "org.weekday_6": "Суббота",
-  "org.weekday_7": "Воскресенье"
+  "org.weekday_7": "Воскресенье",
+  "org.weekday_short_1": "Пн",
+  "org.weekday_short_2": "Вт",
+  "org.weekday_short_3": "Ср",
+  "org.weekday_short_4": "Чт",
+  "org.weekday_short_5": "Пт",
+  "org.weekday_short_6": "Сб",
+  "org.weekday_short_7": "Вс"
 }
