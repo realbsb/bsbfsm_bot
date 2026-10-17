@@ -5,9 +5,17 @@ from __future__ import annotations
 import functools
 import inspect
 
+from aiogram.types import CallbackQuery, Message
+
 from ..logging_setup import get_logger
 
 log = get_logger(__name__)
+
+
+def _safe_msg(cb: CallbackQuery) -> Message | None:
+    """Возвращает редактируемое сообщение callback или None для недоступного сообщения."""
+    message = cb.message
+    return message if isinstance(message, Message) else None
 
 
 def trace(func):
