@@ -17,6 +17,18 @@ log = get_logger(__name__)
 router = Router(name="project")
 
 
+def _can_access_project(project: Project, user: User) -> bool:
+    """Проверяет участие пользователя в проекте до выдачи его данных."""
+    return user.id in {
+        project.manager_id,
+        project.secretary_id,
+        project.supplier_id,
+        project.executor_id,
+        project.current_assignee_id,
+        project.client_user_id,
+    }
+
+
 @router.message(Command("project"))
 @trace
 async def project_cmd(
@@ -39,6 +51,7 @@ async def project_cmd(
                         | (Project.supplier_id == user.id)
                         | (Project.executor_id == user.id)
                         | (Project.current_assignee_id == user.id)
+                        | (Project.client_user_id == user.id)
                     )
                     .order_by(Project.created_at.desc())
                     .limit(20)
@@ -88,7 +101,7 @@ async def _render(
     edit: bool = False,
 ) -> None:
     project = await session.get(Project, project_id)
-    if project is None:
+    if project is None or not _can_access_project(project, user):
         return await msg.answer(t("common.not_found", locale))
 
     stage = await session.get(Stage, project.stage_id)
@@ -138,11 +151,14 @@ async def _render(
 async def on_map(
     cb: CallbackQuery,
     session,
+    user: User,
     locale: str,
 ) -> None:
     project_id = int(cb.data.split(":")[1])
     project = await session.get(Project, project_id)
-    if project is None or project.lat is None or project.lon is None:
+    if project is None or not _can_access_project(project, user):
+        return await cb.answer(t("common.not_found", locale), show_alert=True)
+    if project.lat is None or project.lon is None:
         return await cb.answer("Координаты не указаны", show_alert=True)
 
     await cb.message.answer_location(
@@ -157,11 +173,14 @@ async def on_map(
 async def on_route(
     cb: CallbackQuery,
     session,
+    user: User,
     locale: str,
 ) -> None:
     project_id = int(cb.data.split(":")[1])
     project = await session.get(Project, project_id)
-    if project is None or project.lat is None or project.lon is None:
+    if project is None or not _can_access_project(project, user):
+        return await cb.answer(t("common.not_found", locale), show_alert=True)
+    if project.lat is None or project.lon is None:
         return await cb.answer("Координаты не указаны", show_alert=True)
 
     url = f"https://www.google.com/maps/dir/?api=1&destination={project.lat},{project.lon}"

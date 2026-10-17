@@ -64,9 +64,9 @@
     <div class="grid">
       {% for m in stage_media %}
         {% if m.type.value == 'photo' %}
-          <img src="https://api.telegram.org/file/bot{{ bot_token }}/{{ m.tg_file_id }}" alt="">
+          <img src="{{ request.url_for('project_media', media_id=m.id) }}?key={{ media_key }}" alt="">
         {% elif m.type.value == 'video' %}
-          <video src="https://api.telegram.org/file/bot{{ bot_token }}/{{ m.tg_file_id }}" controls></video>
+          <video src="{{ request.url_for('project_media', media_id=m.id) }}?key={{ media_key }}" controls></video>
         {% endif %}
       {% endfor %}
     </div>
@@ -79,9 +79,9 @@
     <div class="grid">
       {% for m in final_media %}
         {% if m.type.value == 'photo' %}
-          <img src="https://api.telegram.org/file/bot{{ bot_token }}/{{ m.tg_file_id }}" alt="">
+          <img src="{{ request.url_for('project_media', media_id=m.id) }}?key={{ media_key }}" alt="">
         {% elif m.type.value == 'video' %}
-          <video src="https://api.telegram.org/file/bot{{ bot_token }}/{{ m.tg_file_id }}" controls></video>
+          <video src="{{ request.url_for('project_media', media_id=m.id) }}?key={{ media_key }}" controls></video>
         {% endif %}
       {% endfor %}
     </div>

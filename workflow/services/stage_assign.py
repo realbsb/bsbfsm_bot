@@ -196,8 +196,8 @@ async def assign(
     session.add(row)
     await session.flush()
 
-    if user is not None and project.stage_id == stage.id:
-        project.current_assignee_id = user.id
+    if project.stage_id == stage.id:
+        project.current_assignee_id = user.id if user is not None else None
 
     log.info(
         "stage_assign.created",
@@ -265,8 +265,8 @@ async def reassign(
     session.add(new_row)
     await session.flush()
 
-    if new_user is not None and project.stage_id == stage.id:
-        project.current_assignee_id = new_user.id
+    if project.stage_id == stage.id:
+        project.current_assignee_id = new_user.id if new_user is not None else None
 
     log.info(
         "stage_assign.reassigned",

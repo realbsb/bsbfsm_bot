@@ -6,12 +6,14 @@ from contextlib import asynccontextmanager
 from datetime import datetime
 from pathlib import Path
 
+import aiohttp
 import redis.asyncio as aioredis
 from fastapi import Depends, FastAPI, HTTPException, Request
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy import select
+from starlette.background import BackgroundTask
 
 from ..config import get_settings
 from ..db import Database
@@ -69,6 +71,72 @@ app.include_router(public_forms.router)
 @app.get("/health")
 async def health() -> dict:
     return {"ok": True, "ts": datetime.utcnow().isoformat()}
+
+
+@app.get("/media/{media_id}", name="project_media")
+async def project_media(
+    media_id: int,
+    key: str,
+    tg_user: User | None = Depends(get_tg_user),
+    db: Database = Depends(get_db),
+):
+    """Отдаёт Telegram-медиа через сервер, не раскрывая bot token в HTML."""
+    async with db.session() as session:
+        project, mode = await _resolve_access(session, key, tg_user)
+        media = await session.get(MediaAsset, media_id)
+        if project is None or mode == "denied" or media is None:
+            raise HTTPException(404, "Медиа не найдено")
+        if media.project_id != project.id:
+            raise HTTPException(404, "Медиа не найдено")
+        if media.is_final:
+            allowed = mode in ("staff", "client", "delivery_public", "public")
+        else:
+            allowed = mode == "staff"
+        if not allowed:
+            raise HTTPException(404, "Медиа не найдено")
+        bot_token = get_settings().bot_token
+        api_url = f"https://api.telegram.org/bot{bot_token}/getFile"
+        async with (
+            aiohttp.ClientSession() as client,
+            client.get(api_url, params={"file_id": media.tg_file_id}) as response,
+        ):
+            if response.status != 200:
+                raise HTTPException(502, "Не удалось получить медиа")
+            payload = await response.json()
+        if not payload.get("ok") or not payload.get("result", {}).get("file_path"):
+            raise HTTPException(502, "Не удалось получить медиа")
+        file_path = payload["result"]["file_path"]
+
+    file_client = aiohttp.ClientSession()
+    try:
+        file_response = await file_client.get(
+            f"https://api.telegram.org/file/bot{bot_token}/{file_path}"
+        )
+        if file_response.status != 200:
+            file_response.release()
+            await file_client.close()
+            raise HTTPException(502, "Не удалось загрузить медиа")
+    except Exception:
+        await file_client.close()
+        raise
+
+    async def stream_file():
+        try:
+            async for chunk in file_response.content.iter_chunked(64 * 1024):
+                yield chunk
+        finally:
+            file_response.release()
+            await file_client.close()
+
+    content_type = file_response.headers.get(
+        "Content-Type",
+        "video/mp4" if media.type.value == "video" else "image/jpeg",
+    )
+    return StreamingResponse(
+        stream_file(),
+        media_type=content_type,
+        background=BackgroundTask(file_client.close),
+    )
 
 
 @app.get("/p/{key}", response_class=HTMLResponse)
@@ -246,6 +314,6 @@ async def _build_context(
         "stage_media": stage_media,
         "final_media": final_media,
         "participants": participants,
-        "bot_token": request.app.state.settings.bot_token,
+        "media_key": request.path_params["key"],
         "secretary_contact": None,
     }
