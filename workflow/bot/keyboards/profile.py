@@ -91,8 +91,18 @@ def org_workday_kb(
         for day in range(1, 8)
     ]
     rows = [
-        [InlineKeyboardButton(text=f"{t('org.workday_start', locale)}: {start}", callback_data="org_workday_start")],
-        [InlineKeyboardButton(text=f"{t('org.workday_end', locale)}: {end}", callback_data="org_workday_end")],
+        [
+            InlineKeyboardButton(
+                text=f"{t('org.workday_start', locale)}: {start}",
+                callback_data="org_workday_start",
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                text=f"{t('org.workday_end', locale)}: {end}",
+                callback_data="org_workday_end",
+            )
+        ],
     ]
     rows.append([
         InlineKeyboardButton(
