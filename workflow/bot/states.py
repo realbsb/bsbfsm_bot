@@ -76,3 +76,5 @@ class FormFSM(StatesGroup):
 
 class OrgFSM(StatesGroup):
     intake_label = State()
+    workday_start = State()
+    workday_end = State()
