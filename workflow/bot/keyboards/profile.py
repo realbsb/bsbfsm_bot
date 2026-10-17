@@ -5,6 +5,7 @@ from __future__ import annotations
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 from ...models import Role
+from ..texts import t
 
 
 def lang_kb(current: str) -> InlineKeyboardMarkup:
@@ -78,12 +79,20 @@ def org_kb() -> InlineKeyboardMarkup:
     )
 
 
-def org_workday_kb(start: str, end: str, workdays: list[int]) -> InlineKeyboardMarkup:
+def org_workday_kb(
+    start: str,
+    end: str,
+    workdays: list[int],
+    locale: str,
+) -> InlineKeyboardMarkup:
     """Настройка часов и рабочих дней организации."""
-    day_names = [(1, "Пн"), (2, "Вт"), (3, "Ср"), (4, "Чт"), (5, "Пт"), (6, "Сб"), (7, "Вс")]
+    day_names = [
+        (day, t(f"org.weekday_short_{day}", locale))
+        for day in range(1, 8)
+    ]
     rows = [
-        [InlineKeyboardButton(text=f"Начало: {start}", callback_data="org_workday_start")],
-        [InlineKeyboardButton(text=f"Конец: {end}", callback_data="org_workday_end")],
+        [InlineKeyboardButton(text=f"{t('org.workday_start', locale)}: {start}", callback_data="org_workday_start")],
+        [InlineKeyboardButton(text=f"{t('org.workday_end', locale)}: {end}", callback_data="org_workday_end")],
     ]
     rows.append([
         InlineKeyboardButton(
@@ -99,7 +108,7 @@ def org_workday_kb(start: str, end: str, workdays: list[int]) -> InlineKeyboardM
         )
         for day, name in day_names[4:]
     ])
-    rows.append([InlineKeyboardButton(text="◀️ Назад", callback_data="org_open")])
+    rows.append([InlineKeyboardButton(text=t("common.back", locale), callback_data="org_open")])
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
