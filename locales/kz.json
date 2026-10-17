@@ -134,5 +134,12 @@
   "org.weekday_4": "Бейсенбі",
   "org.weekday_5": "Жұма",
   "org.weekday_6": "Сенбі",
-  "org.weekday_7": "Жексенбі"
+  "org.weekday_7": "Жексенбі",
+  "org.weekday_short_1": "Дс",
+  "org.weekday_short_2": "Сс",
+  "org.weekday_short_3": "Ср",
+  "org.weekday_short_4": "Бс",
+  "org.weekday_short_5": "Жм",
+  "org.weekday_short_6": "Сб",
+  "org.weekday_short_7": "Жс"
 }
