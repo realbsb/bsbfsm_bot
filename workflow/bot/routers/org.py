@@ -16,7 +16,7 @@ from ...config import Settings
 from ...logging_setup import get_logger
 from ...models import Position, PositionRole, Role, RoleAssignment, User
 from ...services import org_settings as org_service
-from ..keyboards import cancel_kb, org_intake_label_kb, org_kb, org_workday_kb
+from ..keyboards import cancel_inline_kb, cancel_kb, org_intake_label_kb, org_kb, org_workday_kb
 from ..states import OrgFSM
 from ..texts import t
 from ..utils import _safe_msg, trace
@@ -123,6 +123,7 @@ async def org_workday(
             org.workday_start,
             org.workday_end,
             list(org.workdays or []),
+            locale,
         ),
     )
     await cb.answer()
@@ -154,7 +155,7 @@ async def org_workday_edit_time(
     await state.update_data(workday_field=field)
     await msg.edit_text(
         t("org.workday_time_prompt", locale, field=t(f"org.{field}", locale)),
-        reply_markup=cancel_kb(),
+        reply_markup=cancel_inline_kb(),
     )
     await cb.answer()
 
@@ -230,6 +231,7 @@ async def org_workday_cancel(
             org.workday_start,
             org.workday_end,
             list(org.workdays or []),
+            locale,
         ),
     )
 
@@ -292,6 +294,7 @@ async def org_workday_save_time(
             org.workday_start,
             org.workday_end,
             list(org.workdays or []),
+            locale,
         ),
     )
 
