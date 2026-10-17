@@ -120,7 +120,7 @@
   "org.intake_label_too_short": "Too short, please enter at least 2 characters.",
   "forms.title": "Your forms:",
   "forms.empty": "You don't have any forms yet. Create your first one:",
-  "org.workday_title": "Organization working hours: {start}–{end}\\nWorking days: {days}\\n\\nTap a time to edit it. Tap a weekday to enable or disable it.",
+  "org.workday_title": "Organization working hours: {start}–{end}\nWorking days: {days}\n\nTap a time to edit it. Tap a weekday to enable or disable it.",
   "org.workday_start": "Start of working day",
   "org.workday_end": "End of working day",
   "org.workday_time_prompt": "Enter “{field}” as HH:MM (for example, 09:00).",
